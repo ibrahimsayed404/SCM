@@ -1,0 +1,21 @@
+services:
+  soap:
+    build:
+      context: ./SOAPService
+      
+    ports:
+      - "8001:80"
+
+  rest:
+    build:
+      context: ./RESTApi
+      
+    ports:
+      - "8002:80"
+
+  grpc:
+    build:
+      context: ./rgpc
+      
+    ports:
+      - "8003:80"
