@@ -1,27 +1,23 @@
+DOCKER_CREDENTIALS_ID = 'dockerhub-cred-123'
+
 pipeline {
     agent any
+
+    environment {
+        DOCKER_CREDENTIALS = credentials(DOCKER_CREDENTIALS_ID)
+    }
+
     stages {
-        stage('Build') {
+        stage('Docker Login') {
             steps {
-                sh 'dotnet build SOAPService.sln'
-                sh 'dotnet build RESTApi.sln'
-                sh 'dotnet build GrpcService.sln'
+                script {
+                    // Login to Docker registry using Jenkins credentials
+                    docker.withRegistry('https://registry.hub.docker.com', DOCKER_CREDENTIALS) {
+                        echo 'Successfully logged in to Docker!'
+                    }
+                }
             }
         }
-        stage('Test') {
-            steps {
-                sh 'dotnet test'
-            }
-        }
-        stage('Docker Build') {
-            steps {
-                sh 'docker-compose build'
-            }
-        }
-        stage('Deploy') {
-            steps {
-                sh 'docker-compose up -d'
-            }
-        }
+        // Add more pipeline stages as needed
     }
 }
